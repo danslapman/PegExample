@@ -30,7 +30,7 @@ namespace JsonParser
       jObject : JObject = "{"ws property (","ws property)* "}"ws;
       jArray : JObject = "["ws doc ("," doc)* "]"ws;
       
-      doc : JObject = ws (jArray / jObject / jValue) !ANY;
+      doc : JObject = ws (jArray / jObject / jValue);
     })]
   public class Parser
   {

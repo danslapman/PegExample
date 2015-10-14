@@ -11,7 +11,7 @@ namespace JsonData
 
             public override string ToString()
             {
-                return $"{{{string.Join(" ,", Properties.Select(p => $"{p.Key}: {p.Value.ToString()}"))}}}";
+                return $"{{{string.Join(", ", Properties.Select(p => $"\"{p.Key}\": {p.Value.ToString()}"))}}}";
             }
         }
 
@@ -21,7 +21,7 @@ namespace JsonData
 
             public override string ToString()
             {
-                return $"[{string.Join(" ,", Items.Select(i => i.ToString()))}]";
+                return $"[{string.Join(", ", Items.Select(i => i.ToString()))}]";
             }
         }
 

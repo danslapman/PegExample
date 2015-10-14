@@ -20,7 +20,6 @@ namespace JsonUser
     },
     ""foo""
 ]");
-            if (obj == null) Console.WriteLine("null");
             Console.WriteLine(obj);
             Console.ReadKey();
         }
