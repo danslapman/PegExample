@@ -1,0 +1,30 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Peg;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace PegExample
+{
+   [PegGrammar(Options = EmitDebugSources, 
+    number, 
+    grammar {
+      hex : int = ['A'..'F','0'..'9'];
+      d : int = ['0'..'9'];
+      number : int = d / hex;
+  })]
+  class SimpleParserF
+  {
+    d(token : NToken) : int {
+      int.Parse(GetText(token))
+    }
+    
+    hex(token : NToken) : int {
+      Convert.ToInt32(GetText(token), 16)
+    }
+  }
+}

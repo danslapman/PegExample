@@ -1,0 +1,29 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Peg;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace PegExample
+{
+   [PegGrammar(Options = EmitDebugSources, 
+    number, 
+    grammar {
+      d : int = ['0' .. '9'];
+      number : int = d+;
+  })]
+  class SimpleParserE
+  {
+    d(token : NToken) : int {
+      int.Parse(GetText(token))
+    }
+    
+    number(digits : List[int]) : int {
+      digits.FoldLeft(0, (i, acc) => acc * 10 + i)
+    }
+  }
+}

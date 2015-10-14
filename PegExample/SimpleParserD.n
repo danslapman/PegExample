@@ -1,0 +1,32 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Peg;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace PegExample
+{
+   [PegGrammar(Options = EmitDebugSources, 
+    number, 
+    grammar {
+      d : int = ['0' .. '9'];
+      number : int = d d?;
+  })]
+  class SimpleParserD
+  {
+    d(token : NToken) : int {
+      int.Parse(GetText(token))
+    }
+    
+    number(a : int, b : option[int]) : int {
+      match(b) {
+        |Some(b) => a * 10 + b
+        |None() => a
+      }
+    }
+  }
+}

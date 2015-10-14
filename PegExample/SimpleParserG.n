@@ -1,0 +1,26 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Peg;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace PegExample
+{
+   [PegGrammar(Options = EmitDebugSources, 
+    number, 
+    grammar {
+      ANY = ['\u0000'..'\uFFFF'];
+      comment : void = "/*" (!"*/" ANY)* "*/";
+      number : int = (comment*['0'..'9'])+ comment*;
+  })]
+  class SimpleParserG
+  {
+    number(a : List[NToken]) : int {
+      int.Parse(string.Join("", a.MapToArray(GetText)))
+    }
+  }
+}
