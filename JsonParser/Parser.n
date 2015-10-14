@@ -1,0 +1,87 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Peg;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using JsonData;
+
+namespace JsonParser
+{
+  [PegGrammar(Options = EmitDebugSources,
+    doc,
+    grammar {
+      ANY = !['\u0000'..'\u001F'] !'\u007F' ['\u0000'..'\uFFFF'];
+      ws : void = ("\r\n" / "\n" / "\r" / ' ')*;
+      
+      stringValue : string = '"' ("\\\"" / (!'"' ANY))* '"'ws;
+      
+      nullValue : JValue = "null"ws;
+      stringJValue : JValue = stringValue;
+      value : JValue = nullValue / stringJValue;
+      
+      jValue : JObject = value;
+      
+      property : string*JObject = stringValue ":"ws doc;
+      jObject : JObject = "{"ws property (","ws property)* "}"ws;
+      jArray : JObject = "["ws doc ("," doc)* "]"ws;
+      
+      doc : JObject = ws (jArray / jObject / jValue) !ANY;
+    })]
+  public class Parser
+  {
+    stringValue (_ : NToken, data : NToken, _ : NToken) : string {
+      GetText(data).Replace("\\\"", "\"")
+    }
+    
+    nullValue(_ : NToken) : JValue {
+      JValue.CreateNull()
+    }
+    
+    stringJValue(data : string) : JValue {
+      JValue.CreateString(data)
+    }
+    
+    jValue(value : JValue) : JObject {
+      JObject.CreateValue(value)
+    }
+    
+    property(name : string, _ : NToken, value : JObject) : string*JObject {
+      (name, value)
+    }
+    
+    jArray (
+      _ : NToken,
+      doc : JObject,
+      docs : List[NToken*JObject],
+      _ : NToken
+    ) : JObject {
+      def obj = JObject.CreateArray();
+      foreach(doc in doc::docs.Map((_, b) => b)) obj.Items.Add(doc);
+      obj
+    }
+      
+    jObject(
+      _ : NToken,
+      property : string*JObject,
+      properties : List[NToken*(string*JObject)],
+      _ : NToken
+    ) : JObject {
+      def obj = JObject.CreateObject();
+      foreach((name, value) in property::properties.Map((_, b) => b))
+        obj.Properties[name] = value;
+       obj
+    }
+    
+    public ParseAll(text : string) : JObject {
+      match(Parse(text)) {
+        | Some(obj) => obj
+        | None() => null
+      }
+    }
+  }
+}
