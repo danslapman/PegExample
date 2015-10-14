@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace JsonData
 {
@@ -6,17 +7,32 @@ namespace JsonData
     {
         public class Object : JObject
         {
-            public Dictionary<string, JObject> Properties { get; set; } 
+            public Dictionary<string, JObject> Properties { get; set; }
+
+            public override string ToString()
+            {
+                return $"{{{string.Join(" ,", Properties.Select(p => $"{p.Key}: {p.Value.ToString()}"))}}}";
+            }
         }
 
         public class Array : JObject
         {
-            public List<JObject> Items { get; set; } 
+            public List<JObject> Items { get; set; }
+
+            public override string ToString()
+            {
+                return $"[{string.Join(" ,", Items.Select(i => i.ToString()))}]";
+            }
         }
 
         public class Value : JObject
         {
             public JValue Data { get; set; }
+
+            public override string ToString()
+            {
+                return Data.ToString();
+            }
         }
 
         public static Object CreateObject()
