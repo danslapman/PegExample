@@ -11,15 +11,16 @@ namespace JsonUser
             var obj = parser.ParseAll(
 @"[
     {
-        ""foo"": null,
-        ""array"": [
+        ""foo"" : null,
+        ""array"" : [
             null,
             ""a"",
-            ""b"",
+            ""b""
         ]
     },
     ""foo""
-");
+]");
+            if (obj == null) Console.WriteLine("null");
             Console.WriteLine(obj);
             Console.ReadKey();
         }
